@@ -44,6 +44,7 @@ namespace homework.Controllers
         [HttpPut("{id}")]
         public async Task PutCourseAsync(int id, Course course)
         {
+            course.CourseId = id;
             db.Course.Update(course);
             await db.SaveChangesAsync();
         }
