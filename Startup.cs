@@ -27,10 +27,9 @@ namespace homework
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            var connectionString = @"Server=(localdb)\MSSQLLocalDB;Database=ContosoUniversity;Trusted_Connection=True";
             services.AddControllers();
             services.AddDbContext<ContosoUniversityContext>(opt =>
-                opt.UseSqlServer(connectionString)
+                opt.UseSqlServer(Configuration.GetConnectionString("ContosoUniversity"))
             );
         }
 
