@@ -61,8 +61,24 @@ namespace homework.Controllers
         [HttpPut("{id}")]
         public async Task PutDepartmentAsync(int id, Department department)
         {
-            await db.Database.ExecuteSqlInterpolatedAsync($"EXECUTE [dbo].[Department_Update] {id} , {department.Name} , {department.Budget} , {department.StartDate} , {department.InstructorId} , {department.RowVersion}");
-            await UpdateDepartmentDateModifiedAsync(id);
+            using var tran = await db.Database.BeginTransactionAsync();
+
+            try
+            {
+                var tasks = new List<Task>();
+
+                tasks.Add(db.Database.ExecuteSqlInterpolatedAsync($"EXECUTE [dbo].[Department_Update] {id} , {department.Name} , {department.Budget} , {department.StartDate} , {department.InstructorId} , {department.RowVersion}"));
+                tasks.Add(UpdateDepartmentDateModifiedAsync(id));
+
+                await Task.WhenAll(tasks);
+
+                await tran.CommitAsync();
+            }
+            catch (System.Exception ex)
+            {
+                await tran.RollbackAsync();
+                StatusCode(500, ex.Message);
+            }
         }
 
         private async Task UpdateDepartmentDateModifiedAsync(int id)
