@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using homework.Models;
+using System;
 
 namespace homework.Controllers
 {
@@ -45,6 +46,7 @@ namespace homework.Controllers
         public async Task PutPersonAsync(int id, Person person)
         {
             person.Id = id;
+            person.DateModified = DateTime.Now;
             db.Person.Update(person);
             await db.SaveChangesAsync();
         }

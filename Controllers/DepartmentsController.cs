@@ -5,6 +5,7 @@ using Microsoft.Data.SqlClient;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using homework.Models;
+using System;
 
 namespace homework.Controllers
 {
@@ -55,7 +56,15 @@ namespace homework.Controllers
         [HttpPut("{id}")]
         public async Task PutDepartmentAsync(int id, Department department)
         {
-            await db.Database.ExecuteSqlInterpolatedAsync($"EXECUTE [dbo].[Department_Update] {department.DepartmentId} , {department.Name} , {department.Budget} , {department.StartDate} , {department.InstructorId} , {department.RowVersion}");
+            await db.Database.ExecuteSqlInterpolatedAsync($"EXECUTE [dbo].[Department_Update] {id} , {department.Name} , {department.Budget} , {department.StartDate} , {department.InstructorId} , {department.RowVersion}");
+            await UpdateDepartmentDateModifiedAsync(id);
+        }
+
+        private async Task UpdateDepartmentDateModifiedAsync(int id)
+        {
+            var department = await db.Department.FindAsync(id);
+            department.DateModified = DateTime.Now;
+            await db.SaveChangesAsync();
         }
 
         // DELETE api/departments/5
