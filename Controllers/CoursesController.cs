@@ -17,21 +17,21 @@ namespace homework.Controllers
             this.db = db;
         }
 
-        // GET api/course
+        // GET api/courses
         [HttpGet("")]
         public async Task<ActionResult<IEnumerable<Course>>> GetCourses()
         {
             return await db.Course.ToListAsync();
         }
 
-        // GET api/course/5
+        // GET api/courses/5
         [HttpGet("{id}")]
         public async Task<ActionResult<Course>> GetCourseByIdAsync(int id)
         {
             return await db.Course.FindAsync(id);
         }
 
-        // POST api/course
+        // POST api/courses
         [HttpPost("")]
         public async Task<IActionResult> PostCourseAsync(Course course)
         {
@@ -40,7 +40,7 @@ namespace homework.Controllers
             return Created($"/api/course/{course.CourseId}", course);
         }
 
-        // PUT api/course/5
+        // PUT api/courses/5
         [HttpPut("{id}")]
         public async Task PutCourseAsync(int id, Course course)
         {
@@ -49,13 +49,27 @@ namespace homework.Controllers
             await db.SaveChangesAsync();
         }
 
-        // DELETE api/course/5
+        // DELETE api/courses/5
         [HttpDelete("{id}")]
         public async Task DeleteCourseByIdAsync(int id)
         {
             var toDelete = await db.Course.FindAsync(id);
             db.Course.Remove(toDelete);
             await db.SaveChangesAsync();
+        }
+
+        // GET api/courses/CourseStudents
+        [HttpGet("CourseStudents")]
+        public async Task<ActionResult<IEnumerable<VwCourseStudents>>> GetCourseStudentsAsync()
+        {
+            return await db.VwCourseStudents.ToListAsync();
+        }
+
+        // GET api/courses/CourseStudentCount
+        [HttpGet("CourseStudentCount")]
+        public async Task<ActionResult<IEnumerable<VwCourseStudentCount>>> GetCourseStudentCountAsync()
+        {
+            return await db.VwCourseStudentCount.ToListAsync();
         }
     }
 }
