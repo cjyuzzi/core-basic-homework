@@ -65,5 +65,15 @@ namespace homework.Controllers
             var departmentToDelete = await db.Department.FindAsync(id);
             await db.Database.ExecuteSqlInterpolatedAsync($"EXECUTE [dbo].[Department_Delete] {departmentToDelete.DepartmentId} , {departmentToDelete.RowVersion}");
         }
+
+        // GET api/departments/DepartmentCourseCount
+        [HttpGet("DepartmentCourseCount")]
+        public async Task<ActionResult<IEnumerable<VwDepartmentCourseCount>>> GetDepartmentCourseCountAsync()
+        {
+            return await db.VwDepartmentCourseCount
+                .FromSqlRaw("SELECT * FROM [vwDepartmentCourseCount]")
+                .ToListAsync();
+        }
+
     }
 }
