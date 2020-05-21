@@ -1,10 +1,10 @@
 using System.Linq;
 using System.Threading.Tasks;
 using System.Collections.Generic;
+using Microsoft.Data.SqlClient;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using homework.Models;
-using Microsoft.Data.SqlClient;
 
 namespace homework.Controllers
 {
