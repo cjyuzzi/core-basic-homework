@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using homework.Models;
 using System;
+using System.Linq;
 
 namespace homework.Controllers
 {
@@ -22,14 +23,20 @@ namespace homework.Controllers
         [HttpGet("")]
         public async Task<ActionResult<IEnumerable<Person>>> GetPersonsAsync()
         {
-            return await db.Person.ToListAsync();
+            return await db.Person.Where(p => p.IsDeleted != true).ToListAsync();
         }
 
         // GET api/person/5
         [HttpGet("{id}")]
         public async Task<ActionResult<Person>> GetPersonByIdAsync(int id)
         {
-            return await db.Person.FindAsync(id);
+            var person = await db.Person.FirstOrDefaultAsync(p => p.IsDeleted != true && p.Id == id);
+
+            if (person is null)
+            {
+                return NoContent();
+            }
+            return person;
         }
 
         // POST api/person
@@ -56,7 +63,7 @@ namespace homework.Controllers
         public async Task DeletePersonByIdAsync(int id)
         {
             var personToDelete = await db.Person.FindAsync(id);
-            db.Person.Remove(personToDelete);
+            personToDelete.IsDeleted = true;
             await db.SaveChangesAsync();
         }
     }

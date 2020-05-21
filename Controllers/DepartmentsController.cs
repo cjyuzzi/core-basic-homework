@@ -24,14 +24,19 @@ namespace homework.Controllers
         [HttpGet("")]
         public async Task<ActionResult<IEnumerable<Department>>> GetDepartmentsAsync()
         {
-            return await db.Department.AsNoTracking().ToListAsync();
+            return await db.Department.Where(d => d.IsDeleted != true).ToListAsync();
         }
 
         // GET api/departments/5
         [HttpGet("{id}")]
         public async Task<ActionResult<Department>> GetDepartmentByIdAsync(int id)
         {
-            return await db.Department.FindAsync(id);
+            var department = await db.Department.FirstOrDefaultAsync(d => d.IsDeleted != true && d.DepartmentId == id);
+
+            if (department is null)
+                return NoContent();
+
+            return department;
         }
 
         // POST api/departments
@@ -72,7 +77,9 @@ namespace homework.Controllers
         public async Task DeleteDepartmentByIdAsync(int id)
         {
             var departmentToDelete = await db.Department.FindAsync(id);
-            await db.Database.ExecuteSqlInterpolatedAsync($"EXECUTE [dbo].[Department_Delete] {departmentToDelete.DepartmentId} , {departmentToDelete.RowVersion}");
+            // await db.Database.ExecuteSqlInterpolatedAsync($"EXECUTE [dbo].[Department_Delete] {departmentToDelete.DepartmentId} , {departmentToDelete.RowVersion}");
+            departmentToDelete.IsDeleted = true;
+            await db.SaveChangesAsync();
         }
 
         // GET api/departments/DepartmentCourseCount
