@@ -1,10 +1,8 @@
-using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using homework.Models;
 using Microsoft.EntityFrameworkCore;
+using homework.Models;
 
 namespace homework.Controllers
 {
